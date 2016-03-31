@@ -141,6 +141,7 @@ namespace CustomQueueT
             {
                 yield return _iterator.Current;
             }
+            _iterator.Reset();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
