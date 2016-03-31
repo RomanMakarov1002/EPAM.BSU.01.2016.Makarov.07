@@ -14,7 +14,6 @@ namespace CustomQueueT
         private int _head;
         private int _tail;
         private T[] _repository;
-        private CustomIterator _iterator;
 
         public CustomQueue(int capacity)
         {
@@ -25,7 +24,6 @@ namespace CustomQueueT
             _head = 0;
             _tail = -1;
             _capacity = capacity;
-            _iterator = this.Iterator();
         }
 
         public CustomQueue() : this(1)
@@ -43,7 +41,6 @@ namespace CustomQueueT
             _tail = _repository.Length-1;
             _capacity = _repository.Length;
             _count = _repository.Length;
-            _iterator = this.Iterator();
         }
 
         public void Enqueue(T item)
@@ -86,7 +83,7 @@ namespace CustomQueueT
             return new CustomIterator(this);
         }
 
-        public struct CustomIterator
+        public struct CustomIterator : IEnumerator<T>
         {
             private readonly CustomQueue<T> _customQueue;
             private int _current;
@@ -107,6 +104,14 @@ namespace CustomQueueT
                 }
             }
 
+            object IEnumerator.Current
+            {
+                get
+                {
+                    throw new NotImplementedException();
+                }
+            }
+
             public bool MoveNext()
             {
                 return ++_current < _customQueue.Count;
@@ -115,6 +120,11 @@ namespace CustomQueueT
             public void Reset()
             {
                 _current = -1;
+            }
+
+            public void Dispose()
+            {
+                
             }
         }
 
@@ -136,12 +146,8 @@ namespace CustomQueueT
         }
 
         public IEnumerator<T> GetEnumerator()
-        {
-            while (_iterator.MoveNext())
-            {
-                yield return _iterator.Current;
-            }
-            _iterator.Reset();
+        {            
+            return new CustomIterator(this);          
         }
 
         IEnumerator IEnumerable.GetEnumerator()
